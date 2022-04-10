@@ -10,7 +10,8 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "pino": "^7.0.0-rc.3"
+    "pino": "^7.0.0-rc.3",
+    "winston": "^3.7.2"
   },
   "scripts": {
     "dev": "ts-node-dev src/index.ts | pino-pretty",

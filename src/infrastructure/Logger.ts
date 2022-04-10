@@ -1,42 +1,42 @@
-import pino from 'pino'
 import { AppConfig } from './AppConfig';
-import {BaseError} from "./error/BaseError";
-import os from "os";
+import { BaseError } from './error/BaseError';
+import os from 'os';
+import winston from 'winston';
 
 export enum LoggerLevel {
-  fatal = "fatal",
-  error = "error",
-  warn = "warn",
-  info = "info",
-  debug = "debug",
-  trace = "trace",
-  silent = "silent"
+  fatal = 'fatal',
+  error = 'error',
+  warn = 'warn',
+  info = 'info',
+  debug = 'debug',
+  trace = 'trace',
+  silent = 'silent',
 }
 
 export class Logger {
-
   public static fixed: any;
-  private static logger: pino.Logger;
+  private static logger: winston.Logger;
 
-  private static getClient(): pino.Logger {
+  private static getClient(): winston.Logger {
     if (!Logger.logger) {
       let hostname = os.hostname();
       if (AppConfig.logger?.hostname?.prefix) {
         hostname = AppConfig.logger.hostname.prefix + '--' + hostname;
       }
 
-      Logger.logger = pino({
+      Logger.logger = winston.createLogger({
         level: AppConfig.logger.level ?? LoggerLevel.debug,
-        base: {
-          pid: process.pid,
-          hostname: hostname
-        }
+        format: winston.format.combine(
+          winston.format.json(),
+          winston.format.errors({ stack: true })
+        ),
+        transports: [new winston.transports.Console()],
       });
     }
     return Logger.logger;
   }
 
-  private static make(): pino.Logger {
+  private static make(): winston.Logger {
     return Logger.fixed
       ? Logger.getClient().child(Logger.fixed)
       : Logger.getClient();
@@ -52,7 +52,7 @@ export class Logger {
 
   static trace(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().trace(context, message);
+    Logger.make().error(context, message);
   }
 
   static debug(message: string, context: any = null): void {
@@ -77,25 +77,22 @@ export class Logger {
 
   static fatal(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().fatal(context, message)
+    Logger.make().emerg(context, message);
   }
 
   private static parseContext(context: any) {
-    if(context instanceof BaseError) {
+    if (context instanceof BaseError) {
       return { context: context.toObject() };
     }
 
     if (context instanceof Error) {
       return {
-        errorCode: context['code'],
-        errorName: context['name'],
-        errorStatus: context['status'],
         errorFileName: context['fileName'],
         errorLineNumber: context['lineNumber'],
-        stack: context['stack']
-      }
+        stack: context['stack'],
+      };
     }
 
-    return {context: context};
+    return { context: context };
   }
 }
