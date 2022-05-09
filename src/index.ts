@@ -1,3 +1,12 @@
-import { HttpServer } from './infrastructure/HttpServer';
+import 'reflect-metadata';
 
-HttpServer.start()
+import('@di/startup')
+  .then(({ startup }) => {
+    startup();
+  })
+  .catch((error) => {
+    console.error(error);
+    if (process.env.NODE_ENV === 'production') {
+      process.kill(process.pid, 'SIGTERM');
+    }
+  });
