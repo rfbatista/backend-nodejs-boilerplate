@@ -1,5 +1,5 @@
-import { makeModule } from '@di/container';
-import { requestContainer } from '@di/middleware';
+import { makeModule } from '@context/container';
+import { requestContainer } from '@context/middleware';
 import { errorHanlder } from '@infrastructure/middlewares/error-handler';
 import { notFoundHanlder } from '@infrastructure/middlewares/not-found-hanlder';
 import { requestId } from '@infrastructure/middlewares/request-Id';
@@ -38,6 +38,7 @@ const server = makeModule(
           });
         }),
     );
+
     container.register({
       server: asValue(serverExpress),
       apiRouter: asValue(apiRouter),

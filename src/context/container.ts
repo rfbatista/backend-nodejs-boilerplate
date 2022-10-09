@@ -1,17 +1,16 @@
-import { CorePorts } from '@core/ports';
 import { config as appConfig } from '@infrastructure/config/index';
-import { Logger, logger } from '@infrastructure/logger';
+import { Logger } from '@infrastructure/Logger';
 import { createContainer, asFunction, AwilixContainer, asValue } from 'awilix';
 
 const container = createContainer();
 
 type MakeModuleCallback = {
-  container: AwilixContainer<CorePorts & any>;
+  container: AwilixContainer<any>;
   asFunction: typeof asFunction;
   asValue: typeof asValue;
   onReady: (fn: () => Promise<void>) => void;
   onDisposing: (fn: () => Promise<void>) => void;
-  logger: Logger;
+  logger: typeof Logger;
   config: typeof appConfig;
 };
 
@@ -58,7 +57,7 @@ const { makeModule, bootstrap } = ((
   const shutdown = (code) => async () => {
     process.stdout.write('\n');
     setTimeout(() => {
-      logger.error('Ok, my patience is over! #ragequit');
+      Logger.error('Ok, my patience is over! #ragequit');
       process.exit(code);
     }, 10000).unref();
     await stop();
@@ -69,7 +68,7 @@ const { makeModule, bootstrap } = ((
     let module;
     try {
       for (module of modules) {
-        logger.info(`Bootstraping ${module.name} module`);
+        Logger.info(`Bootstraping ${module.name} module`);
         await module.fn({
           container,
           asFunction,
@@ -81,7 +80,7 @@ const { makeModule, bootstrap } = ((
         });
       }
     } catch (error) {
-      logger.error(`Error bootstraping module ${module?.name || ''}`, error);
+      Logger.error(`Error bootstraping module ${module?.name || ''}`, error);
       return;
     }
     onReadyHook.forEach((hook) => {
@@ -103,6 +102,6 @@ const { makeModule, bootstrap } = ((
     makeModule,
     bootstrap,
   };
-})(logger, appConfig);
+})(Logger, appConfig);
 
 export { makeModule, bootstrap };

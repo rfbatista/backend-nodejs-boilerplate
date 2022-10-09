@@ -1,4 +1,4 @@
-import { ScopedRequest } from '@di/middleware';
+import { ScopedRequest } from '@context/middleware';
 import { asFunction } from 'awilix';
 import { NextFunction, Request, Response } from 'express';
 

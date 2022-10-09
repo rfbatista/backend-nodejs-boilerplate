@@ -1,4 +1,4 @@
-import { AppConfig } from './AppConfig';
+import { config as AppConfig } from './config/index';
 import { BaseError } from './error/BaseError';
 import os from 'os';
 import winston from 'winston';
@@ -12,6 +12,33 @@ export enum LoggerLevel {
   trace = 'trace',
   silent = 'silent',
 }
+
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = `0${String(date.getMonth() + 1)}`.slice(-2);
+  const day = `0${String(date.getDate())}`.slice(-2);
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  return `${year}-${month}-${day} ${hour}:${minute < 10 ? `0${minute}` : minute}:${
+    seconds < 10 ? `0${seconds}` : seconds
+  }`;
+};
+
+const logFormat = (env: string, appName: string) =>
+  winston.format.printf(({ level, message, timestamp, ...metadata }) => {
+    let msg = `[${level}] ${formatDate(new Date(timestamp))} ${appName}-${env} ${message} `;
+    if (metadata) {
+      try {
+        const meta = env === 'local' ? JSON.stringify(metadata, undefined, 2) : JSON.stringify(metadata);
+        if (meta !== '{}') msg += `\n ${meta}`;
+      } catch (err) {
+        console.error('error parsing context in logger');
+      }
+    }
+    return msg;
+  });
 
 export class Logger {
   public static fixed: any;
@@ -27,8 +54,11 @@ export class Logger {
       Logger.logger = winston.createLogger({
         level: AppConfig.logger.level ?? LoggerLevel.debug,
         format: winston.format.combine(
+          (AppConfig.env === 'local' && winston.format.colorize()),
           winston.format.json(),
-          winston.format.errors({ stack: true })
+          winston.format.timestamp(),
+          winston.format.errors({ stack: true }),
+          logFormat(AppConfig.env, AppConfig.applicationName),
         ),
         transports: [new winston.transports.Console()],
       });
@@ -62,22 +92,22 @@ export class Logger {
 
   static info(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().info(context, message);
+    Logger.make().info(message, context);
   }
 
   static warn(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().warn(context, message);
+    Logger.make().warn(message, context);
   }
 
   static error(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().error(context, message);
+    Logger.make().error(message, context);
   }
 
   static fatal(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().emerg(context, message);
+    Logger.make().emerg(message, context);
   }
 
   private static parseContext(context: any) {
@@ -93,6 +123,6 @@ export class Logger {
       };
     }
 
-    return { context: context };
+    return context;
   }
 }

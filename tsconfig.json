@@ -5,6 +5,7 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "sourceMap": true,
+    "inlineSources": true,
     "module": "commonjs",
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -12,13 +13,13 @@
     "experimentalDecorators": true,
     "noEmit": false,
     "target": "ES2020",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "outDir": "./dist",
     "paths": {
-      "@di/*": ["src/di/*"],
+      "@context/*": ["src/context/*"],
       "@core/*": ["src/core/*"],
-      "@infrastructure/*": ["src/infrastructure/*"],
-      "@presentation/*": ["src/presentation/*"]
+      "@modules/*": ["src/modules/*"],
+      "@infrastructure/*": ["src/infrastructure/*"]
     }
   },
   "include": ["src"],

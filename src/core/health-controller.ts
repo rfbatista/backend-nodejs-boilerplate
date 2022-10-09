@@ -1,4 +1,4 @@
-import { handler } from '@di/handler';
+import { handler } from '@context/handler';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { DataSource } from 'typeorm';

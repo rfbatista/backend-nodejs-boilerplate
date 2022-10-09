@@ -1,7 +1,5 @@
 import { config } from '@infrastructure/config';
 import { DataSource } from 'typeorm';
-import { RestaurantSchema } from '@infrastructure/data-source/schemas/restaurant-schema';
-import { ItemSchema } from '@infrastructure/data-source/schemas/item-schema';
 
 const postgres = new DataSource({
   type: 'postgres',
@@ -12,7 +10,6 @@ const postgres = new DataSource({
   username: config.dataSource.postgres.user,
   synchronize: config.env === 'local' ? true : false,
   logging: false,
-  entities: [RestaurantSchema, ItemSchema],
   migrations: ['migration/**/*.ts'],
 });
 

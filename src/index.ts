@@ -1,13 +1,12 @@
-import 'reflect-metadata';
-import './infrastructure/module-alias';
-import 'module-alias/register';
-import {startup} from '@di/startup'
+import "reflect-metadata";
+import "module-alias/register";
+import "./context/module-alias";
 
-try {
-  startup();
-} catch (error) {
-  console.error(error);
-  if (process.env.NODE_ENV === 'production') {
-    process.kill(process.pid, 'SIGTERM');
-  }
-}
+import("@context/startup").then(({ startup }) => {
+  startup().catch((error) => {
+    console.error(error);
+    if (process.env.NODE_ENV === "production") {
+      process.kill(process.pid, "SIGTERM");
+    }
+  });
+});
