@@ -4,7 +4,7 @@ In this boilerplate i try to follow [the twelve factor app](https://12factor.net
 
 # Folder Structure
 
-.
+```
 ├── example.env
 ├── nodemon.json
 ├── package.json
@@ -53,4 +53,4 @@ In this boilerplate i try to follow [the twelve factor app](https://12factor.net
 │   └── modules
 ├── tsconfig.json
 └── yarn.lock
-
+```
