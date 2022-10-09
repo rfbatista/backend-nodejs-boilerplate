@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "16.13.1"
+    "node": "18.3.0"
   },
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
@@ -23,6 +23,8 @@
     "morgan": "^1.10.0",
     "pino": "^7.0.0-rc.3",
     "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.24.0",
+    "sqlite3": "^5.1.2",
     "typeorm": "^0.3.10",
     "uuid": "^9.0.0",
     "winston": "^3.7.2"
@@ -33,7 +35,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "@types/module-alias": "^2.0.1",
-    "@types/node": "^17.0.23",
+    "@types/node": "^18.8.3",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "eslint": "^8.11.0",
