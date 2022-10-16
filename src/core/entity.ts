@@ -1,6 +1,4 @@
-import {
-    UniqueIdentifier
-} from "@core/domain/value-object/unique-identifier";
+import { createUniqueIdentifier, UniqueIdentifier } from "./value-object/unique-identifier";
 
 export abstract class Entity<Props> {
   readonly id: UniqueIdentifier;
@@ -8,7 +6,7 @@ export abstract class Entity<Props> {
   constructor(props: Props, id?: string) {
     const obj = Object.entries(props);
     this.props = new Map(obj) as Map<keyof Props, Props[keyof Props]>;
-    this.id = new UniqueIdentifier(id);
+    this.id = createUniqueIdentifier(id);
   }
 }
 
