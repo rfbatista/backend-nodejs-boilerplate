@@ -9,6 +9,6 @@ const environmentLocal = process.env.NODE_ENV === 'local';
 addAliases({
   '@context': resolve(environmentLocal ? 'src/context' : 'dist/context'),
   '@modules': resolve(environmentLocal ? 'src/modules' : 'dist/modules'),
-  '@core': resolve(environmentLocal ? 'src/core' : 'dist/core'),
+  '@shared': resolve(environmentLocal ? 'src/shared' : 'dist/shared'),
   '@infrastructure': resolve(environmentLocal ? 'src/infrastructure' : 'dist/infrastructure'),
 });
