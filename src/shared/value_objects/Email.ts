@@ -1,5 +1,5 @@
 import { Result } from "core/result";
-import { ValueObject } from "core/value-object";
+import { ValueObject } from "core/ValueObject";
 
 type Props = {
   address: string;
