@@ -17,7 +17,7 @@
     "outDir": "./dist",
     "paths": {
       "@context/*": ["context/*"],
-      "@shared/*": ["core/*"],
+      "@shared/*": ["shared/*"],
       "@modules/*": ["modules/*"],
       "@infrastructure/*": ["infrastructure/*"]
     }

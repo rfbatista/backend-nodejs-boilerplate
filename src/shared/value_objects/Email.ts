@@ -1,12 +1,12 @@
-import { Result } from "core/result";
-import { ValueObject } from "core/ValueObject";
+import { Result } from "@shared/Result";
+import { ValueObject } from "@shared/ValueObject";
 
 type Props = {
   address: string;
 };
 
 export default class Email extends ValueObject<Props> {
-  static create(email: string) {
+  static create(email: string): Result<Error> | Result<Email> {
     return Result.ok(new Email({ address: email }));
   }
   toString(): string {

@@ -14,6 +14,13 @@ const config = {
     }
   },
   dataSource: {},
+  aws: {
+    cognito: {
+      userPoolId: envString("AWS_USER_POOL_ID"),
+      clientId: envString("AWS_CLIENT_ID"),
+      region: envString("AWS_COGNITO_REGION")
+    }
+  }
 };
 
 export { config };

@@ -1,4 +1,4 @@
-import { createErrorResult } from '@core/result';
+import { createErrorResult } from '@shared/Result';
 
 const errorHanlder = (error, req, res, next) => {
   if (!(error instanceof Error)) next(error);

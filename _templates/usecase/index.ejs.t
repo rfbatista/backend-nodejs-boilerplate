@@ -1,14 +1,14 @@
 ---
-to: src/modules/<%= module %>/use_cases/<%= entity %>/<%= name %>.ts
+to: src/h.changeCase.snakes/<%= h.changeCase.snake %>/use_cases/<%= entity %>/<%= h.changeCase.pascal %>.ts
 ---
-import { Result } from "@core/result";
-import { UseCase } from "@core/usecase";
+import { Result } from "@shared/Result";
+import { UseCase } from "@shared/usecase";
 
 type Input = {}
 
 type Output = {}
 
-export default class <%= name %> implements UseCase<Input, Output>{
+export default class <%= h.changeCase.pascal %> implements UseCase<Input, Output>{
     execute(input: Input): Promise<Result<Error> | Result<Output>> {
         throw new Error("Method not implemented.");
     }

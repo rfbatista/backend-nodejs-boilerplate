@@ -1,5 +1,5 @@
-import { Result } from "core/result";
-import { ValueObject } from "core/ValueObject";
+import { Result } from "@shared/Result";
+import { ValueObject } from "@shared/ValueObject";
 import { Coordinate } from "./coordinates";
 
 type Props = {

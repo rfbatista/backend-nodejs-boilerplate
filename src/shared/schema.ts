@@ -1,4 +1,4 @@
-import { Entity } from '@core/domain/entity';
+import { Entity } from '@shared/domain/entity';
 
 interface Schema {
   id: string;

@@ -1,17 +1,26 @@
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
 import { makeModule } from '@context/container';
-import { requestContainer } from '@context/middleware';
 import { errorHanlder } from '@infrastructure/middlewares/error-handler';
 import { notFoundHanlder } from '@infrastructure/middlewares/not-found-hanlder';
 import { requestId } from '@infrastructure/middlewares/request-Id';
 import { resultHanlder } from '@infrastructure/middlewares/result-handler';
-import express, { Router, json, urlencoded, Express } from 'express';
-import morgan from 'morgan';
-import helmet from 'helmet';
 import cors from 'cors';
 
+async function getGraphQlMiddlewareServer(schemas: any, resolvers: any): Promise<express.RequestHandler> {
+  const server = new ApolloServer({
+    typeDefs: schemas,
+    resolvers: resolvers,
+  });
+  // Note you must call `server.start()` on the `ApolloServer`
+  // instance before passing the instance to `expressMiddleware`
+  await server.start();
+
+  return expressMiddleware(server)
+}
 const server = makeModule(
   'server',
-  async ({ container, onReady, asValue, logger, config: { http } }): Promise<void> => {
+  async ({ onReady, logger, registerHook, config: { http } }): Promise<void> => {
     const serverExpress: Express = express();
     const apiRouter = Router();
 
@@ -21,7 +30,6 @@ const server = makeModule(
       .use(json({ limit: '50mb' }))
       .use(morgan(`[:date[clf]] :method :url :status :res[content-length] - :response-time ms`))
       .use(helmet())
-      .use(requestContainer(container))
       .use(json({ limit: '1mb' }))
       .use(urlencoded({ extended: true }))
       .use('/api', apiRouter)
@@ -29,9 +37,17 @@ const server = makeModule(
       .use(errorHanlder)
       .use(resultHanlder);
 
+    const resolvers = []
+    const schemas = []
+
+    const addResolver = (resolver: any) => resolvers.push(resolver);
+    const addSchema = (schema: any) => schemas.push(schema)
+
     onReady(
       async () =>
-        new Promise((resolve) => {
+        new Promise(async (resolve) => {
+          const graphqlMiddlware = await getGraphQlMiddlewareServer(schemas, resolvers);
+          graphqlRouter.use(graphqlMiddlware)
           serverExpress.listen(http.port, () => {
             logger.info(`Webserver listening at: http://${http.host}:${http.port}`);
             resolve();
@@ -39,10 +55,10 @@ const server = makeModule(
         }),
     );
 
-    container.register({
-      server: asValue(serverExpress),
-      apiRouter: asValue(apiRouter),
-    });
+    registerHook('apiRouter', apiRouter)
+    registerHook('addGrapqlSchema', addSchema)
+    registerHook('addGraphqlResolver', addResolver)
+
   },
 );
 

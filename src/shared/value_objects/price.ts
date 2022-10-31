@@ -1,4 +1,4 @@
-import { createMoney, CurrencyEnum } from '@core/domain/value-object/money';
+import { createMoney, CurrencyEnum } from '@shared/value_objects/money';
 
 interface Price {
   amount(): number;
