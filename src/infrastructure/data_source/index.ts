@@ -1,9 +1,8 @@
 import { makeModule } from '@context/container';
-import { Container } from 'typedi';
-import Prisma from './prisma';
+import { PrismaClient } from '@prisma/client';
 
 const databaseModule = makeModule('database', async ({ onDisposing }) => {
-  const prisma = Container.get(Prisma);
+  const prisma = new PrismaClient();
   onDisposing(() => prisma.$disconnect());
 });
 

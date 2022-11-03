@@ -1,16 +1,16 @@
-import { config as AppConfig } from './config/index';
-import { BaseError } from './error/BaseError';
-import os from 'os';
-import winston from 'winston';
+import { config as AppConfig } from "./config/index";
+import { BaseError } from "./error/BaseError";
+import os from "os";
+import winston from "winston";
 
 export enum LoggerLevel {
-  fatal = 'fatal',
-  error = 'error',
-  warn = 'warn',
-  info = 'info',
-  debug = 'debug',
-  trace = 'trace',
-  silent = 'silent',
+  fatal = "fatal",
+  error = "error",
+  warn = "warn",
+  info = "info",
+  debug = "debug",
+  trace = "trace",
+  silent = "silent",
 }
 
 const formatDate = (date: Date) => {
@@ -21,20 +21,25 @@ const formatDate = (date: Date) => {
   const minute = date.getMinutes();
   const seconds = date.getSeconds();
 
-  return `${year}-${month}-${day} ${hour}:${minute < 10 ? `0${minute}` : minute}:${
-    seconds < 10 ? `0${seconds}` : seconds
-  }`;
+  return `${year}-${month}-${day} ${hour}:${
+    minute < 10 ? `0${minute}` : minute
+  }:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
 const logFormat = (env: string, appName: string) =>
   winston.format.printf(({ level, message, timestamp, ...metadata }) => {
-    let msg = `[${level}] ${formatDate(new Date(timestamp))} ${appName}-${env} ${message} `;
+    let msg = `[${level}] ${formatDate(
+      new Date(timestamp)
+    )} ${appName}-${env} ${message} `;
     if (metadata) {
       try {
-        const meta = env === 'local' ? JSON.stringify(metadata, undefined, 2) : JSON.stringify(metadata);
-        if (meta !== '{}') msg += `\n ${meta}`;
+        const meta =
+          env === "local"
+            ? JSON.stringify(metadata, undefined, 2)
+            : JSON.stringify(metadata);
+        if (meta !== "{}") msg += `\n ${meta}`;
       } catch (err) {
-        console.error('error parsing context in logger');
+        console.error("error parsing context in logger");
       }
     }
     return msg;
@@ -48,17 +53,27 @@ export class Logger {
     if (!Logger.logger) {
       let hostname = os.hostname();
       if (AppConfig.logger?.hostname?.prefix) {
-        hostname = AppConfig.logger.hostname.prefix + '--' + hostname;
+        hostname = AppConfig.logger.hostname.prefix + "--" + hostname;
       }
 
       Logger.logger = winston.createLogger({
+        levels: {
+          emerg: 0,
+          alert: 1,
+          crit: 2,
+          error: 3,
+          warning: 4,
+          notice: 5,
+          info: 6,
+          debug: 7,
+        },
         level: AppConfig.logger.level ?? LoggerLevel.debug,
         format: winston.format.combine(
-          (AppConfig.env === 'local' && winston.format.colorize()),
+          AppConfig.env === "local" && winston.format.colorize(),
           winston.format.json(),
           winston.format.timestamp(),
           winston.format.errors({ stack: true }),
-          logFormat(AppConfig.env, AppConfig.applicationName),
+          logFormat(AppConfig.env, AppConfig.applicationName)
         ),
         transports: [new winston.transports.Console()],
       });
@@ -87,7 +102,7 @@ export class Logger {
 
   static debug(message: string, context: any = null): void {
     context = Logger.parseContext(context);
-    Logger.make().debug(context, message);
+    Logger.make().debug(message, context);
   }
 
   static info(message: string, context: any = null): void {
@@ -117,9 +132,9 @@ export class Logger {
 
     if (context instanceof Error) {
       return {
-        errorFileName: context['fileName'],
-        errorLineNumber: context['lineNumber'],
-        stack: context['stack'],
+        errorFileName: context["fileName"],
+        errorLineNumber: context["lineNumber"],
+        stack: context["stack"],
       };
     }
 

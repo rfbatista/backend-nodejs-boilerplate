@@ -18,6 +18,7 @@ const config = {
     cognito: {
       userPoolId: envString("AWS_USER_POOL_ID"),
       clientId: envString("AWS_CLIENT_ID"),
+      clientSecret: envString("AWS_CLIENT_SECRET"),
       region: envString("AWS_COGNITO_REGION")
     }
   }
