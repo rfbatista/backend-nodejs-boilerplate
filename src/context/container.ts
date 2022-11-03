@@ -117,7 +117,8 @@ const { makeModule, bootstrap } = ((
         .then(() => {
           return;
         })
-        .catch(() => {
+        .catch((error) => {
+          Logger.error('ready hook failed', error)
           return;
         });
     });
