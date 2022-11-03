@@ -4,13 +4,13 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
     env_file: .env
     profiles:
       - "api"
     environment:
       DEV_DATABASE_USER: root
-      DEV_DATABASE_PASSWORD: Ra19271996
+      DEV_DATABASE_PASSWORD: 123
       DEV_DATABASE_HOST: postgres
       DEV_DATABASE: postgres
     ports:
@@ -33,7 +33,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: Ra19271996
+      POSTGRES_PASSWORD: 123
     ports:
       - "5432:5432"
     container_name: "backend_postgres"

@@ -7,12 +7,17 @@
     "node": "18.3.0"
   },
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
+    "start:dev": "NODE_ENV=development prisma generate && ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
     "start": "node dist/index.js",
     "build": "rimraf ./dist && tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "lint": "eslint . --ext .ts",
     "test": "npx cross-env NODE_ENV=test jest --coverage=false --passWithNoTests --runInBand",
     "test:verbose": "npm test -- --detectOpenHandles --verbose",
+    "docker:clean": "docker-compose down --volumes",
+    "docker:databases": "docker-compose --profile db up --build",
+    "docker:api": "docker-compose --profile api up --build",
+    "docker:migrate": "docker-compose -f docker-compose.dev.yml exec backend npx prisma migrate dev --name init",
+    "docker:seed": "docker-compose -f docker-compose.dev.yml exec backend npx sequelize-cli db:seed:all",
     "test:ci": "npm test -- --coverage",
     "create:module": "npx hygen module new",
     "create:entity": "npx hygen entity new",
